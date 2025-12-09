@@ -1,66 +1,139 @@
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
-    const modal = document.getElementById('activityDetailModal');
+    const modal = document.getElementById('activityModal');
+    const form = document.getElementById('activityForm');
+    const responsableSelect = document.getElementById('responsableSelect');
 
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-        locale: 'es',
+    cargarResponsables();
+
+    window.calendarObj = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        firstDay: 1,
-        allDayText: 'Todo el día',
+        locale: 'es',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: 'dayGridMonth,timeGridWeek'
         },
-        buttonText: {
-            today: 'Hoy',
-            month: 'Mes',
-            week: 'Semana',
-            day: 'Día'
-        },
-        // CORRECCIÓN: Usar events como función con fechas dinámicas
-        events: function(info, successCallback, failureCallback) {
-            const formData = new FormData();
-            formData.append('accion', 'getCalendarEvents');
-            formData.append('start', info.startStr.split('T')[0]);
-            formData.append('end', info.endStr.split('T')[0]);
+        buttonText: { today: 'Hoy', month: 'Mes', week: 'Semana' },
+        navLinks: true, 
+        dayMaxEvents: true, 
+        height: 'auto',
 
-            fetch('/app/controllers/actividadesController.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => {
-                if (!r.ok) throw new Error('Error en la respuesta del servidor');
-                return r.json();
-            })
-            .then(eventos => {
-                console.log('Eventos recibidos:', eventos);
-                successCallback(eventos);
-            })
-            .catch(error => {
-                console.error('Error al cargar eventos:', error);
-                failureCallback(error);
-            });
+        events: function(info, successCallback, failureCallback) {
+            const fd = new FormData();
+            fd.append('accion', 'getCalendarEvents');
+            fd.append('start', info.startStr);
+            fd.append('end', info.endStr);
+            fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => d.error ? failureCallback(d.error) : successCallback(d))
+                .catch(e => failureCallback(e));
         },
+
+        dateClick: function(info) {
+            form.reset();
+            document.getElementById('fecha').value = info.dateStr;
+            modal.classList.add('active');
+        },
+
         eventClick: function(info) {
             mostrarDetalle(info.event);
-        },
-        eventDisplay: 'block',
-        displayEventTime: true,
-        eventTimeFormat: {
-            hour: '2-digit',
-            minute: '2-digit',
-            meridiem: 'short'
-        },
-        height: 'auto',
-        navLinks: true,
-        editable: false,
-        dayMaxEvents: true
+        }
     });
 
-    calendar.render();
+    window.calendarObj.render();
+
+    window.mostrarAlerta = function(tipo, titulo, mensaje) {
+        const color = tipo === 'success' ? '#18c5a3' : '#ff6b6b';
+        const icon = tipo === 'success' ? '✅' : '❌';
+        
+        const alertDiv = document.createElement('div');
+        alertDiv.style.cssText = `
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            background: ${color}; color: white; padding: 20px;
+            border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-weight: bold; animation: slideIn 0.3s ease;
+        `;
+        alertDiv.innerHTML = `${icon} ${titulo}<br><small style="font-weight:normal;">${mensaje}</small>`;
+        
+        document.body.appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 4000);
+    };
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        formData.append('accion', 'insert');
+        
+        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.conflict) {
+                if(confirm(`⚠️ ${data.message}\n\n¿Deseas guardar de todos modos?`)) {
+                    formData.append('force_save', 'true');
+                    guardarForzado(formData);
+                }
+            } else if (data.success) {
+                mostrarAlerta('success', '✅ Éxito', 'Actividad guardada correctamente');
+                form.reset(); 
+                closeModal(); 
+                window.calendarObj.refetchEvents();
+            } else { 
+                mostrarAlerta('error', '❌ Error', data.error || 'Error desconocido');
+            }
+        });
+    });
+
+    function guardarForzado(fd) {
+        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) { 
+                mostrarAlerta('success', '✅ Guardado', 'Actividad creada correctamente');
+                form.reset(); 
+                closeModal(); 
+                window.calendarObj.refetchEvents(); 
+            }
+        });
+    }
+
+    function cargarResponsables() {
+        const fd = new FormData();
+        fd.append('accion', 'getResponsables');
+        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            let html = '<option value="">Seleccione...</option>';
+            if(Array.isArray(data)) {
+                data.forEach(m => html += `<option value="${m.idmiembro}">${m.nombre} ${m.apellido}</option>`);
+            }
+            if(responsableSelect) responsableSelect.innerHTML = html;
+        });
+    }
+
+    const btnSum = document.getElementById('btnSummary');
+    if(btnSum) {
+        btnSum.addEventListener('click', function() {
+            const date = window.calendarObj.getDate();
+            window.location.href = `/app/controllers/actividadesController.php?accion=exportExcel&year=${date.getFullYear()}&month=${date.getMonth() + 1}`;
+        });
+    }
+
+    window.closeModal = function() { 
+        modal.classList.remove('active'); 
+        form.reset(); 
+    };
+
+    window.addEventListener('click', function(e) {
+        if (e.target.id === 'activityModal' || e.target.id === 'activityDetailModal') {
+            e.target.classList.remove('active');
+        }
+    });
 });
 
+// ==========================================
+// FUNCIÓN IDÉNTICA A MISACTIVIDADES.JS
+// ==========================================
 function mostrarDetalle(event) {
     const props = event.extendedProps;
     
@@ -182,8 +255,11 @@ function closeDetailModal() {
     document.getElementById('activityDetailModal').classList.remove('active');
 }
 
-window.addEventListener('click', (e) => {
-    if (e.target.id === 'activityDetailModal') {
-        closeDetailModal();
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
-});
+`;
+document.head.appendChild(style);

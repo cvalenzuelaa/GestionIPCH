@@ -1,0 +1,10 @@
+RewriteEngine On 
+RewriteRule ^([a-z]+)$   index.php?nav=$1 [NC,QSA]
+RewriteRule ^([a-z]+)/([a-z]+)$   index.php?nav=$1&dash=$2 [NC,QSA]
+RewriteRule ^([a-z]+)/([a-z]+)/([a-z]+)$   index.php?nav=$1&dash=$2&accion$3 [NC,QSA]
+ErrorDocument 404 /app/viewer/error/error.404.php
+
+php_value upload_max_filesize 64M
+php_value post_max_size 64M
+php_value max_execution_time 300
+php_value max_input_time 300

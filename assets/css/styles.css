@@ -1,0 +1,3666 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+/* ======================
+   VARIABLES / RESET
+   ====================== */
+:root{
+    /* Paleta principal (marino -> azul) + verde calypso más notorio */
+    --navy-900: #07182a;
+    --navy-700: #12355b;
+    --blue-500: #2b66b3;
+    --purple-600: #6d28d9;
+    --calypso: #18c5a3;        /* verde calypso (principal) */
+    --calypso-700: #0fa582;    /* verde calypso oscuro */
+    --surface: rgba(255,255,255,0.03);
+    --surface-2: rgba(255,255,255,0.04);
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.78);
+    --glass-border: rgba(255,255,255,0.08);
+    --shadow: 0 10px 30px rgba(0,0,0,0.45);
+    --radius-lg: 16px;
+    --radius-md: 8px;
+
+    /* Nuevas variables para diseño mejorado */
+    --gradient-primary: linear-gradient(135deg, var(--calypso) 0%, var(--blue-500) 100%);
+    --blur-bg: rgba(7,24,42,0.7);
+    --calendar-bg: rgba(255,255,255,0.03);
+    --event-shadow: 0 2px 6px rgba(24,197,163,0.15);
+    --border-soft: 1px solid rgba(255,255,255,0.05);
+}
+
+/* RESET básico + tipografía */
+* { box-sizing: border-box; margin:0; padding:0; font-family: 'Nunito', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); }
+html,body { height:100%; width:100%; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+img { display:block; max-width:100%; height:auto; }
+label { display:block; font-size:0.95rem; }
+
+/* ======================
+   LAYOUT / FONDO
+   ====================== */
+body {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px;
+    background:
+        radial-gradient(circle at 75% 18%, rgba(33,80,149,0.10) 0%, transparent 18%),
+        radial-gradient(circle at 20% 78%, rgba(24,60,104,0.08) 0%, transparent 20%),
+        linear-gradient(180deg, var(--navy-700) 0%, var(--navy-900) 100%);
+    background-attachment: fixed;
+}
+
+/* Contenedor central "glass" */
+.container {
+    width:100%;
+    max-width:460px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    padding:34px;
+    box-shadow: var(--shadow);
+    position:relative;
+    backdrop-filter: blur(6px) saturate(120%);
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
+}
+
+
+
+/* ======================
+   TIPOGRAFÍA / CABECERA
+   ====================== */
+h1 {
+    text-align:center;
+    margin-bottom:18px;
+    font-size:1.6rem;
+    color:var(--text);
+    letter-spacing:1px;
+    text-shadow: 0 6px 24px rgba(0,0,0,0.45);
+    font-weight:700;
+}
+
+/* ======================
+   FORMULARIO
+   ====================== */
+.form-group { margin-bottom:16px; }
+.form-group label {
+    display:block;
+    margin-bottom:8px;
+    color:var(--muted);
+    font-weight:600;
+    font-size:0.90rem;
+}
+.form-group input {
+    width:100%;
+    padding:12px 14px;
+    border-radius:var(--radius-md);
+    border:1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.01);
+    color:var(--text);
+    font-size:1.05rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);
+    transition: border-color .15s, background .15s, box-shadow .15s, transform .12s;
+}
+.form-group input::placeholder { color: rgba(255,255,255,0.45); }
+.form-group input:focus {
+    outline:none;
+    border-color: var(--calypso);
+    background: rgba(255,255,255,0.015);
+    box-shadow: 0 10px 30px rgba(24,197,163,0.12);
+    transform: translateY(-1px);
+}
+
+/* mensajes de error (ocultos por defecto) */
+small { display:none; color:#ff6b6b; font-size:0.9rem; }
+
+/* ======================
+   BOTONES (calypso más notorio)
+   ====================== */
+/* Botón principal: ahora con presencia fuerte de calypso */
+.btn-login {
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border: none;
+    cursor:pointer;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    color: #062425; /* texto oscuro sobre verde/azul para contraste */
+    font-weight:800;
+    font-size:1.05rem;
+    box-shadow: 0 12px 28px rgba(24,197,163,0.18), inset 0 -2px 0 rgba(0,0,0,0.08);
+    transition: transform .08s ease, box-shadow .12s ease, filter .12s;
+}
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 36px rgba(24,197,163,0.22);
+    filter: saturate(1.05);
+}
+.btn-login:active { transform: translateY(0); }
+
+/* link para registrar */
+.registrar-usuario {
+    display:block;
+    text-align:center;
+    margin-top:14px;
+    color: var(--muted);
+    text-decoration: underline;
+    font-weight:600;
+    cursor:pointer;
+}
+.registrar-usuario:hover { color: var(--calypso); }
+
+/* ======================
+   LOGO / BADGE
+   ====================== */
+img[alt="Logo Ipch"] {
+    border-radius: 0 ;
+    border: none ;
+    padding: 0 ;
+    box-shadow: none ;
+    background: transparent ;
+    width: 130px; /* coincide con el inline style; ajusta si quieres otro tamaño */
+    height: auto;
+    display: block;
+    margin: 0 auto 16px;
+}
+
+/* ======================
+   NAVBAR
+   ====================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 84px;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+}
+
+.logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-bar .logo-img {
+    width: 255px;
+    height: 255px;
+    object-fit: contain;
+}
+
+.logo-bar span {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    transition: background 0.2s;
+}
+
+.user-menu:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 24px;
+    background: var(--navy-900);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 8px 0;
+    min-width: 200px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.2s;
+}
+
+.dropdown-menu.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.dropdown-menu a, 
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background: var(--calypso);
+}
+
+/* ======================
+   DASHBOARD
+   ====================== */
+.dash-container {
+    margin-top: 70px;
+    padding: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dashboard-content {
+    background: var(--navy-900);
+    padding: 15px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.dashboard-welcome {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.dashboard-card {
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(24,197,163,0.2);
+}
+
+.card-title {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.card-desc {
+    display: block;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+/* ======================
+   CALENDARIO
+   ====================== */
+.calendar-header {
+    margin-bottom: 0.8rem;
+}
+
+.calendar-header h1 {
+    font-size: 1.3rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.calendar-controls button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+}
+
+.calendar-controls button:hover {
+    background: var(--calypso-700);
+}
+
+.calendar-controls select {
+    background: var(--navy-700);
+    border: 1px solid var(--glass-border);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    color: var(--text);
+}
+
+/* Mejoras en el contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* Ajustes del contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* Ajustes del contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* Ajustes del contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* Ajustes del contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* Ajustes del contenedor del calendario */
+.calendar-container {
+    margin-top: 70px;
+    padding: 20px;
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+
+.calendar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 10px;
+}
+
+/* Cabecera del calendario mejorada */
+.calendar-header-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.calendar-header-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+}
+
+.calendar-description {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 16px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: var(--gradient-primary);
+    border-color: transparent;
+}
+
+.btn-add-activity {
+    padding: 8px 16px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-activity:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24,197,163,0.3);
+}
+
+/* Calendario mejorado */
+.calendar-wrapper {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 16px;
+    border: var(--border-soft);
+}
+
+.fc {
+    background: transparent !important;
+}
+
+.fc th {
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: rgba(255,255,255,0.03);
+}
+
+.fc td {
+    background: rgba(255,255,255,0.01);
+}
+
+.fc .fc-daygrid-day-number {
+    color: var(--text);
+    font-weight: 500;
+    padding: 8px !important;
+}
+
+.fc .fc-day-today {
+    background: rgba(24,197,163,0.1) !important;
+}
+
+.fc-event {
+    background: var(--gradient-primary) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Modal modificado */
+.modal {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: var(--blur-bg);
+    border-radius: 20px;
+    border: var(--border-soft);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width:520px){
+    .container { padding:22px; border-radius:12px; }
+    h1 { font-size:1.6rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .navbar {
+        justify-content: space-between;
+    }
+    
+    .dash-container {
+        padding: 8px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .calendar-container {
+        padding: 0.5rem;
+    }
+}
+
+/* utilidad: foco accesible */
+:focus { outline: 3px solid rgba(24,197,163,0.12); outline-offset:3px; }
+
+/* Estilos para modales */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 350px;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h2 {
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, var(--calypso), var(--blue-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--calypso);
+}
+
+/* Tooltips y menús contextuales */
+.tooltip {
+    position: absolute;
+    background: var(--navy-900);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tooltip.active {
+    opacity: 1;
+}
+
+/* Quick Actions Menu */
+.quick-actions {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500));
+    border: none;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    background: var(--calypso-700);
+}
+
+/* ======================
+   Miembros View - estilos específicos
+   ====================== */
+
+.page-header { gap: 1rem; align-items: center; }
+
+#alertContainer { min-width: 220px; }
+
+.btn-primary {
+    background: var(--gradient-primary) !important;
+    border: none !important;
+    box-shadow: 0 8px 24px rgba(24,197,163,0.12);
+}
+
+/* DataTables tweaks to match visual identity */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+#tablaMiembros {
+    border-collapse: separate !important;
+    border-spacing: 0 8px;
+}
+
+#tablaMiembros thead th {
+    background: transparent;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: none;
+}
+
+#tablaMiembros tbody tr {
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+}
+
+#tablaMiembros tbody td {
+    vertical-align: middle;
+    border: none !important;
+}
+
+.badge {
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+/* Action buttons compact style */
+.btn-group .btn {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+}
+
+/* Filters and search layout */
+#filtroEstado, #busquedaGlobal {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+}
+
+/* Alerts container alignment */
+#alertContainer .alert {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Modal form appearance (miembros) */
+.modal-content { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.modal .form-control, .modal .form-select, .modal textarea {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #tablaMiembros thead { display: none; }
+    #tablaMiembros tbody td { display: block; width: 100%; }
+    #tablaMiembros tbody tr { margin-bottom: 12px; display: block; }
+}
+
+/* =========================================
+   AGREGAR AL FINAL DE styles.css
+   ========================================= */
+
+/* --- DataTables Dark Theme Fix --- */
+.dataTables_wrapper {
+    padding-top: 10px;
+    color: var(--text);
+}
+
+/* Textos informativos y paginación */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: var(--muted) !important;
+    margin-bottom: 15px;
+}
+
+/* Inputs del buscador */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-left: 8px;
+}
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;
+    border-color: var(--calypso);
+}
+
+/* Tabla Transparente */
+table.dataTable tbody tr {
+    background-color: transparent !important;
+}
+table.dataTable tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+table.dataTable td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding: 12px 10px !important;
+    vertical-align: middle;
+}
+table.dataTable thead th {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--calypso);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding-bottom: 12px !important;
+}
+
+/* Botones Paginación */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--text) !important;
+    border-radius: 4px !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--calypso) !important;
+    color: #000 !important;
+    border: none;
+    font-weight: bold;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border: none;
+}
+
+/* --- Timeline (Hoja de Vida) --- */
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) transparent;
+}
+.timeline::-webkit-scrollbar { width: 6px; }
+.timeline::-webkit-scrollbar-thumb { background: var(--calypso); border-radius: 10px; }
+
+.timeline-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid var(--calypso);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 0 10px 10px 0;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.timeline-type {
+    font-weight: 800;
+    color: var(--calypso);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+.timeline-date {
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+.timeline-desc {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.4;
+}
+.timeline-author {
+    font-size: 0.75rem;
+    color: var(--blue-500);
+    margin-top: 8px;
+    text-align: right;
+    font-style: italic;
+}
+
+/* --- Gráfico --- */
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* --- Botones de gestión más pequeños, centrados y cristalizados --- */
+.action-buttons-container {
+    display: flex;
+    gap: 7px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.btn-action {
+    padding: 5px 10px;
+    border-radius: 7px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(24,197,163,0.10), 0 1px 6px rgba(43,102,179,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* <-- Asegura texto e ícono centrados horizontalmente */
+    gap: 5px;
+    background: rgba(34,46,60,0.55);
+    color: #fff;
+    backdrop-filter: blur(2px) saturate(120%);
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.12);
+    height: 32px; /* <-- Altura fija para mejor alineación vertical */
+    min-width: 70px; /* Opcional: ancho mínimo para evitar botones muy pequeños */
+}
+
+.btn-action:hover {
+    transform: translateY(-1px) scale(1.03);
+    filter: brightness(1.18);
+    box-shadow: 0 4px 16px rgba(24,197,163,0.18);
+}
+
+.btn-edit {
+    background: rgba(43,102,179,0.65);
+    color: #fff;
+    border: 1px solid #2b66b3;
+}
+.btn-pastoral {
+    background: rgba(139,92,246,0.65);
+    color: #fff;
+    border: 1px solid #8b5cf6;
+}
+.btn-stats {
+    background: rgba(24,197,163,0.65);
+    color: #222e3c;
+    border: 1px solid #18c5a3;
+}
+.btn-delete {
+    background: rgba(239,68,68,0.65);
+    color: #fff;
+    border: 1px solid #ef4444;
+}
+
+@media (max-width: 600px) {
+    .action-buttons-container {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-end;
+    }
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* --- Estilo personalizado para todos los select (dropdown) --- */
+select, .form-select {
+    background: rgba(72, 116, 165, 0.85); /* Fondo oscuro cristalizado */
+    color: #fff;                     /* Texto blanco */
+    border: 1px solid var(--calypso);/* Borde calypso */
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.18s, background 0.18s;
+    box-shadow: 0 2px 8px rgba(24,197,163,0.10);
+}
+
+select:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--blue-500);
+    background: rgba(34,46,60,0.95);
+}
+
+option {
+    background: #12355b; /* Fondo para opciones */
+    color: #fff;
+}
+
+/* Cambia el color de fondo y texto de la barra de días del calendario FullCalendar */
+.fc-col-header-cell {
+    background: var(--navy-700) !important;   /* Fondo azul oscuro de tu paleta */
+    color: var(--calypso) !important;         /* Texto verde calypso para contraste */
+    font-weight: 700 !important;
+    border-bottom: 1px solid var(--calypso);  /* Línea inferior calypso */
+    padding: 10px 0 !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--calypso) !important;         /* Asegura el color del texto */
+    font-size: 1rem !important;
+    letter-spacing: 1px;
+}
+/* =========================================================
+   DISEÑO PRO CALENDARIO (Versión Dark / Oscura)
+   ========================================================= */
+
+:root {
+    /* Líneas de la rejilla muy sutiles y oscuras */
+    --fc-border-color: rgba(255, 255, 255, 0.05) !important;
+    --fc-today-bg: rgba(24, 197, 163, 0.1) !important; /* Fondo sutil día actual */
+    --fc-page-bg-color: transparent;
+}
+
+/* --- 1. CABECERA DE DÍAS (Lun, Mar...) - CAMBIO PRINCIPAL --- */
+.fc-col-header-cell {
+    /* Usamos navy-900 (el más oscuro) y sin transparencia para quitar lo gris */
+    background-color: var(--navy-900) !important; 
+    padding: 15px 0 !important;
+    border-bottom: 2px solid var(--calypso) !important; /* Línea neón abajo */
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--calypso) !important; /* Texto verde brillante */
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.95rem !important;
+    text-decoration: none !important;
+}
+
+/* --- 2. ESTRUCTURA Y BORDES --- */
+.fc-theme-standard .fc-scrollgrid {
+    border: none !important; /* Sin marco exterior */
+}
+
+/* Celdas del cuerpo: Bordes muy finos */
+.fc-theme-standard td, .fc-theme-standard th {
+    border: 1px solid var(--fc-border-color) !important;
+}
+
+/* --- 3. DÍAS Y NÚMEROS --- */
+.fc-daygrid-day-top {
+    justify-content: center !important;
+    padding-top: 8px !important;
+}
+
+.fc-daygrid-day-number {
+    color: rgba(255, 255, 255, 0.9) !important; /* Blanco casi puro para contraste */
+    font-size: 1rem !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+/* Día actual (HOY) */
+.fc-day-today {
+    background: var(--fc-today-bg) !important;
+}
+.fc-day-today .fc-daygrid-day-number {
+    background: var(--calypso);
+    color: #000 !important;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(24, 197, 163, 0.4);
+}
+
+/* --- 4. EVENTOS (Bloques de actividades) --- */
+.fc-event {
+    border-radius: 6px !important;
+    border: none !important;
+    margin: 2px 5px !important;
+    padding: 4px 8px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, var(--calypso), var(--blue-500)) !important;
+    cursor: pointer;
+}
+
+.fc-event-title, .fc-event-time {
+    white-space: normal !important;
+    color: #fff !important; /* Texto blanco en eventos */
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* --- 5. BOTONES DE NAVEGACIÓN --- */
+.fc-button {
+    background: var(--navy-900) !important; /* Fondo negro/azul oscuro */
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    border-radius: 8px !important;
+}
+
+.fc-button:hover {
+    background: var(--navy-700) !important;
+    border-color: var(--calypso) !important;
+}
+
+.fc-button-active {
+    background: var(--calypso) !important;
+    color: #07182a !important;
+    border-color: var(--calypso) !important;
+}
+
+/* Título del mes */
+.fc-toolbar-title {
+    font-size: 1.8rem !important;
+    font-weight: 800;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+
+/* --- Fix definitivo: no centrar verticalmente el layout y reservar espacio para el navbar --- */
+:root { --navbar-height: 84px; }
+
+/* Asegura que anclas/scroll respeten el navbar fijo */
+html { scroll-padding-top: var(--navbar-height); }
+
+/* REEMPLAZAR la regla body { display:flex; align-items:center; justify-content:center; ... }
+   por esta (evita que el contenido se centre y quede bajo el header) */
+body {
+  display: block !important;                 /* quitar centrado vertical global */
+  min-height: 100vh;
+  padding-left: 24px;                        /* conserva el padding lateral */
+  padding-right: 24px;
+  padding-top: calc(var(--navbar-height) + 16px) !important; /* espacio visible bajo navbar */
+  box-sizing: border-box;
+}
+
+/* Forzar que los contenedores principales no usen margin-top que cause solapamiento */
+.container-fluid,
+.calendar-container,
+.main-wrapper,
+.dash-container {
+  margin-top: 0 !important;
+  /* Si quieres separacion interior adicional, usa padding-top en lugar de margin-top */
+  padding-top: 8px !important;
+  box-sizing: border-box;
+}
+
+/* Si tienes un wrapper específico para miembros, aplica explicitamente */
+.calendar-wrapper,
+.container-fluid > .main-wrapper {
+  padding-top: 8px !important;
+}
+
+/* Asegura que el navbar esté siempre encima */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: 1200;
+}
+
+/* Mantén scroll normal en la página (no overflow oculto) */
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ...existing code... */
+
+/* Helper: modal de tamaño fijo */
+.modal-content.modal-fixed {
+  width: 760px;                      /* ancho fijo deseado */
+  height: 520px;                     /* alto fijo deseado */
+  max-width: calc(100% - 48px);      /* responsivo en pantallas pequeñas */
+  max-height: calc(100vh - 96px);    /* evita solaparse con el header */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                  /* el modal no crecerá; el body scrolleará */
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* El formulario / cuerpo del modal hace scroll interno */
+.modal-content.modal-fixed form,
+.modal-content.modal-fixed .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 8px; /* evita que contenido quede oculto por la scrollbar */
+}
+
+/* Footer / acciones permanece visible y no scrollea */
+.modal-content.modal-fixed .form-actions,
+.modal-content.modal-fixed .modal-footer {
+  flex: 0 0 auto;
+  z-index: 2;
+  padding-top: 12px;
+}
+
+/* Ajustes responsive */
+@media (max-width: 820px) {
+  .modal-content.modal-fixed {
+    width: 92%;
+    height: auto;
+    max-height: calc(100vh - 64px);
+  }
+  .modal-content.modal-fixed form,
+  .modal-content.modal-fixed .modal-body {
+    max-height: calc(100vh - 220px);
+  }
+}
+
+/* Modal Hoja de Vida: tamaño fijo y scroll solo en historial */
+#modalHojaVida .modal-content {
+  width: 540px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100vh - 120px); /* deja espacio para navbar y márgenes */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* evita que el modal crezca */
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* Encabezado y formulario superior permanecen visibles (no scrollean) */
+#modalHojaVida .modal-header { flex: 0 0 auto; margin-bottom: 8px; }
+#modalHojaVida #formInteraccion { flex: 0 0 auto; margin-bottom: 12px; }
+
+/* Historial: ocupa el espacio restante y scrollea internamente */
+#modalHojaVida .timeline,
+#modalHojaVida #listaInteracciones,
+#modalHojaVida .timeline-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(100vh - 300px); /* ajusta si necesitas más/menos espacio */
+  padding-right: 8px; /* evita que el contenido quede oculto por la scrollbar */
+}
+
+/* Asegura que el footer de acciones (si existe) permanezca visible */
+#modalHojaVida .modal-footer,
+#modalHojaVida .form-actions {
+  flex: 0 0 auto;
+  z-index: 2;
+}
+
+/* Scrollbar estética solo para el historial */
+#modalHojaVida .timeline::-webkit-scrollbar,
+#modalHojaVida #listaInteracciones::-webkit-scrollbar {
+  width: 8px;
+}
+#modalHojaVida .timeline::-webkit-scrollbar-thumb,
+#modalHojaVida #listaInteracciones::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--calypso), var(--blue-500));
+  border-radius: 6px;
+}
+
+/* Responsive: modal más estrecho en pantallas pequeñas */
+@media (max-width: 640px) {
+  #modalHojaVida .modal-content {
+    width: 92%;
+    max-height: calc(100vh - 80px);
+    padding: 12px;
+  }
+  #modalHojaVida .timeline,
+  #modalHojaVida #listaInteracciones { max-height: calc(100vh - 220px); }
+}
+
+body.login-page {
+    /* Restaurar Flexbox para centrar vertical y horizontalmente */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    
+    /* Quitar el espacio superior reservado para el Navbar del admin */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    
+    /* Asegurar altura completa */
+    min-height: 100vh;
+}
+/* =========================================
+   DISEÑO ESTILO iOS CALENDAR + LAYOUT
+   ========================================= */
+
+
+/* El contenedor principal se ajusta a la altura de la ventana menos el header */
+.ios-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px; /* Calendario | Lista */
+    gap: 20px;
+    height: calc(100vh - 130px); /* Restamos altura del Navbar y paddings */
+    overflow: hidden; /* Evita que la página entera haga scroll */
+}
+
+/* Tarjeta del Calendario */
+.ios-calendar-card {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Importante para que el calendario scrollee dentro */
+}
+
+/* Ajuste específico para que FullCalendar respete el alto */
+#calendar {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Tarjeta Lateral (Lista) */
+.ios-sidebar-card {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.activity-list-container {
+    flex-grow: 1;
+    overflow-y: auto; /* Scroll solo en la lista */
+    padding-right: 5px;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .ios-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+    }
+    .ios-calendar-card { height: 600px; margin-bottom: 20px; }
+    .ios-sidebar-card { height: 400px; }
+}
+
+/* --- ESTILO FULLCALENDAR iOS --- */
+.fc-theme-standard td, .fc-theme-standard th {
+    border-color: rgba(255,255,255,0.05) !important;
+}
+.fc-col-header-cell {
+    background: transparent !important;
+    padding: 10px 0 !important;
+    color: #8E8E93; /* Gris iOS */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border-bottom: none !important;
+}
+.fc-daygrid-day-number {
+    color: white;
+    font-weight: 500;
+    margin: 5px;
+}
+.fc-day-today {
+    background: transparent !important;
+}
+.fc-day-today .fc-daygrid-day-number {
+    background: #FF3B30; /* Rojo Apple para HOY */
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex; align-items: center; justify-content: center;
+}
+.ios-event-style {
+    border-radius: 4px;
+    padding: 2px 4px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- PANEL LATERAL (LISTA) --- */
+.ios-sidebar-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.status-tabs {
+    display: flex;
+    background: rgba(118, 118, 128, 0.24);
+    padding: 2px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.status-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 6px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.status-tab.active {
+    background: #636366; /* Gris selección iOS */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.activity-list-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Item de Lista */
+.ios-list-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    transition: transform 0.2s;
+}
+.ios-list-item:hover { background: rgba(255,255,255,0.1); transform: scale(1.02); }
+
+.ios-date-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.2);
+    width: 50px; height: 50px;
+    border-radius: 8px;
+}
+.d-day { font-size: 1.2rem; font-weight: bold; color: white; line-height: 1; }
+.d-month { font-size: 0.7rem; text-transform: uppercase; color: #aaa; }
+
+.ios-info-box { flex-grow: 1; }
+.ios-title { margin: 0; font-size: 0.95rem; color: white; font-weight: 600; }
+.ios-time { margin: 2px 0 5px; font-size: 0.8rem; color: #8E8E93; }
+.ios-badge {
+    background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; text-transform: uppercase; color: #ccc;
+}
+
+/* =========================================
+   ESTILOS "VER MÁS" (+2 más) Y POPOVER
+   ========================================= */
+
+/* El enlace "+2 más" */
+.fc-daygrid-more-link {
+    background: rgba(255, 255, 255, 0.1) !important; /* Fondo suave */
+    color: var(--calypso) !important; /* Texto color principal */
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 12px !important; /* Bordes redondeados */
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    display: inline-block;
+    margin-top: 2px;
+}
+
+.fc-daygrid-more-link:hover {
+    background: var(--calypso) !important;
+    color: #000 !important; /* Texto oscuro al pasar mouse */
+    transform: translateY(-1px);
+}
+
+/* La ventana flotante que se abre al hacer clic (Popover) */
+.fc-theme-standard .fc-popover {
+    background: rgba(30, 30, 40, 0.95) !important; /* Fondo oscuro */
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    border-radius: 12px !important;
+}
+
+/* Cabecera de la ventana flotante */
+.fc-theme-standard .fc-popover-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 10px !important;
+}
+
+.fc-popover-title {
+    color: white !important;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.fc-theme-standard .fc-popover-close {
+    color: var(--muted) !important;
+    opacity: 0.7;
+}
+.fc-theme-standard .fc-popover-close:hover {
+    color: white !important;
+    opacity: 1;
+}
+
+/* Cuerpo de la ventana flotante */
+.fc-theme-standard .fc-popover-body {
+    padding: 10px !important;
+}
+
+/* =========================================
+   ESTILOS FORMULARIO ACTIVIDADES (Correcciones Finales)
+   ========================================= */
+
+/* Botón Guardar (Estilo Principal con Gradiente) */
+/* =========================================
+   ESTILOS BOTONES FORMULARIO (Centrados y Glass)
+   ========================================= */
+
+/* Contenedor de botones: Centrado y con espacio */
+.form-actions {
+    display: flex;
+    justify-content: center !important; /* Centrado horizontal */
+    align-items: center;
+    gap: 20px; /* Separación entre botones */
+    margin-top: 25px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Línea sutil separadora */
+}
+
+/* Botón Guardar: Tamaño estándar (ya no 100%) */
+.btn-save {
+    background: var(--gradient-primary) !important;
+    border: none;
+    padding: 10px 30px; /* Más ancho pero no full */
+    min-width: 160px;   /* Ancho mínimo estándar */
+    border-radius: 8px;
+    color: #07182a;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(24, 197, 163, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(24, 197, 163, 0.4);
+    filter: brightness(1.1);
+}
+
+/* Botón Cancelar: Diseño "Red Glassmorphism" */
+.btn-cancel-glass {
+    background: rgba(220, 38, 38, 0.93); /* Rojo transparente */
+    border: 1px solid rgba(220, 38, 38, 0.83); /* Borde rojo sutil */
+    color: #ff8888; /* Texto rojo claro */
+    padding: 10px 25px;
+    min-width: 140px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.btn-cancel-glass:hover {
+    background: rgba(220, 38, 38, 0.35); /* Más rojo al pasar mouse */
+    color: #fff; /* Texto blanco */
+    border-color: rgba(220, 38, 38, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);
+}
+
+/* Área de Descripción (Textarea mejorado) */
+textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05); /* Fondo oscuro transparente */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    padding: 12px;
+    font-family: inherit; /* Usa la misma fuente que el resto (Nunito) */
+    font-size: 0.95rem;
+    resize: none; /* Evita que el usuario lo agrande rompiendo el modal */
+    overflow-y: auto; /* Scroll automático si hay mucho texto */
+    min-height: 80px;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--calypso);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Scrollbar personalizada para el textarea */
+textarea::-webkit-scrollbar {
+    width: 6px;
+}
+textarea::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 4px;
+}
+textarea::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* =========================================
+   CORRECCIÓN MODALES (Scroll y Tamaño)
+   ========================================= */
+
+.modal-content {
+    /* Limita la altura al 85% de la pantalla */
+    max-height: 85vh; 
+    /* Activa el scroll vertical si el contenido es muy largo */
+    overflow-y: auto; 
+    /* Diseño moderno de la barra de scroll */
+    scrollbar-width: thin;
+    scrollbar-color: var(--calypso) rgba(255,255,255,0.05);
+}
+
+/* Personalización del scroll para Chrome/Edge/Safari */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: var(--calypso);
+    border-radius: 20px;
+}
+
+/* Ajuste específico para el formulario de tesorería */
+#tesoreriaForm {
+    padding-right: 5px; /* Espacio para que el scroll no tape contenido */
+}
+
+/* =========================================
+   BOTONES DE RECURSOS (Diseño Rectangular Pro)
+   ========================================= */
+
+.resource-icons {
+    display: flex;
+    flex-direction: row;      /* Siempre en fila horizontal */
+    gap: 8px;                 /* Espacio entre botones */
+    justify-content: flex-start; /* Alineados a la izquierda (o center si prefieres) */
+    align-items: center;
+    flex-wrap: wrap;          /* Si no caben, bajan ordenadamente */
+}
+
+.icon-link {
+    /* Comportamiento flexible */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;                 /* Espacio entre el ícono y el texto */
+    
+    /* Tamaño y Relleno */
+    padding: 6px 12px;        /* Relleno cómodo */
+    min-width: 70px;          /* Ancho mínimo para uniformidad */
+    height: 32px;             /* Altura fija igual a los botones de acción */
+    
+    /* Estética */
+    border-radius: 6px;       /* Bordes redondeados suaves */
+    color: white !important;  /* Texto blanco forzado */
+    text-decoration: none !important;
+    
+    /* Tipografía */
+    font-size: 0.75rem;       /* Tamaño de letra legible */
+    font-weight: 800;         /* Texto en negrita */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;      /* IMPORTANTE: Evita que el texto se parta en dos líneas */
+    
+    /* Bordes y Sombras */
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+/* Hover (Efecto al pasar el mouse) */
+.icon-link:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+/* Colores Específicos */
+.bg-pdf { background: #ef4444; border-color: #b91c1c; }      /* Rojo */
+.bg-ppt { background: #f97316; border-color: #c2410c; }      /* Naranja */
+.bg-vid { background: #3b82f6; border-color: #1d4ed8; }      /* Azul */
+
+/* Estado Deshabilitado (Gris muy sutil) */
+.icon-link.disabled {
+    opacity: 0.4;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.3) !important;
+    border-color: transparent;
+    pointer-events: none; /* No click */
+    box-shadow: none;
+}
+
+/* =========================================
+   CORRECCIÓN DEFINITIVA NOTIFICACIONES
+   ========================================= */
+
+/* =========================================
+   NOTIFICACIONES DEFINITIVO
+   ========================================= */
+
+/* Contenedor */
+.notif-wrapper {
+    position: relative;
+    margin-right: 20px;
+    display: flex; align-items: center;
+}
+
+/* Ícono Campana (BLANCO FORZADO) */
+.notif-icon-btn {
+    cursor: pointer; padding: 8px; border-radius: 50%;
+    transition: 0.3s; position: relative; display: flex;
+}
+.notif-icon-btn i {
+    font-size: 1.4rem;
+    color: #ffffff !important; /* Blanco puro */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.notif-icon-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* Contador Rojo (Badge) */
+.notif-badge {
+    position: absolute; top: -2px; right: -2px;
+    background: #ef4444; color: white;
+    font-size: 0.65rem; font-weight: 800;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--navy-900);
+    z-index: 10;
+}
+
+/* Menú Desplegable */
+.notif-dropdown {
+    position: absolute; top: 50px; right: -10px; width: 340px;
+    background: #151f2e; /* Fondo oscuro sólido */
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+    opacity: 0; visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 9999; overflow: hidden;
+}
+.notif-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.notif-header {
+    padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-weight: bold; color: white; background: rgba(255,255,255,0.05);
+}
+
+.notif-list { max-height: 350px; overflow-y: auto; }
+
+/* Items */
+.notif-item {
+    padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex; gap: 12px; align-items: start;
+    cursor: pointer; transition: 0.2s; background: transparent;
+}
+.notif-item:hover { background: rgba(255,255,255,0.05); }
+
+/* Leídas (Gris y Opacas) */
+.notif-read { opacity: 0.5; background: rgba(0,0,0,0.2); }
+.notif-read .n-title { color: #aaa !important; }
+
+.n-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;
+}
+.n-content h4 { margin: 0 0 3px 0; font-size: 0.85rem; color: white; }
+.n-content p { margin: 0; font-size: 0.8rem; color: #bbb; line-height: 1.3; }
+.n-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+/* =========================================
+   DISEÑO DASHBOARD PREMIUM (Glassmorphism)
+   ========================================= */
+
+/* Header de Bienvenida */
+.welcome-header {
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.welcome-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-header p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Grid Layout */
+.dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Tarjeta Dashboard */
+.dash-card {
+    background: rgba(30, 41, 59, 0.6); /* Fondo oscuro semitransparente */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto Hover: Levantar y brillar */
+.dash-card:hover {
+    transform: translateY(-8px);
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(24, 197, 163, 0.4); /* Borde verde suave */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
+                0 0 20px rgba(24, 197, 163, 0.1); /* Resplandor */
+}
+
+/* Icono Circular con Gradiente */
+.card-icon-bg {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--calypso);
+    transition: 0.3s;
+    flex-shrink: 0;
+}
+
+/* Al hacer hover, el icono se llena de color */
+.dash-card:hover .card-icon-bg {
+    background: var(--gradient-primary);
+    color: #07182a; /* Icono oscuro sobre fondo brillante */
+    border-color: transparent;
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* Información de texto */
+.card-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.3rem;
+    color: white;
+    font-weight: 700;
+}
+
+.card-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #94a3b8; /* Gris azulado */
+    line-height: 1.4;
+}
+
+.dash-card:hover .card-info p {
+    color: #cbd5e1; /* Texto más claro al hover */
+}
+
+/* Flecha decorativa */
+.card-arrow {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.1);
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.dash-card:hover .card-arrow {
+    right: 15px; /* Se mueve a la derecha */
+    color: var(--calypso);
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dash-grid {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+        gap: 15px;
+    }
+    .welcome-header h1 {
+        font-size: 1.8rem;
+    }
+    .main-wrapper {
+        justify-content: flex-start;
+        padding-top: 40px;
+    }
+}
+
+/* =========================================
+   ESTILOS ESPECÍFICOS MODAL ASISTENCIA
+   ========================================= */
+
+/* Hacemos el modal un poco más ancho para que quepan los datos */
+#modalAsistencia .modal-content {
+    width: 500px; /* Más ancho que los 400px originales */
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Evita que se salga de la pantalla */
+}
+
+/* Wrapper del gráfico fijo */
+#modalAsistencia .chart-wrapper {
+    flex: 0 0 auto; /* No se encoge ni estira */
+    height: 220px;  /* Altura fija para el gráfico */
+    margin-bottom: 10px;
+    background: transparent; /* Opcional: quitar fondo si se prefiere limpio */
+}
+
+/* Contenedor de la lista (Aquí está la magia del scroll) */
+.table-details-wrapper {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    max-height: 250px;
+    /* Un borde sutil arriba para separar del gráfico */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    margin-top: 10px;
+    position: relative; /* Necesario para el z-index */
+}
+
+.table-details-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+.table-details-wrapper::-webkit-scrollbar-thumb {
+    background: var(--calypso);
+    border-radius: 4px;
+}
+.table-details-wrapper::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Diseño de la Tabla */
+.table-details {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px; /* Pequeña separación vertical entre filas */
+}
+
+.table-details thead th {
+    position: sticky;
+    top: 0;
+    /* IMPORTANTE: Color sólido (mismo que tu modal) para tapar el texto al hacer scroll */
+    background-color: #07182a; 
+    color: var(--calypso);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 10px;
+    z-index: 10; /* Asegura que esté por encima de las filas */
+    
+    /* Línea decorativa inferior y sombra para dar profundidad */
+    border-bottom: 2px solid var(--calypso);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    border-radius: 2.5px;
+}
+
+/* Celdas del cuerpo */
+.table-details tbody td {
+    padding: 12px 10px;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.03); /* Fondo sutil por fila */
+    border: none;
+}
+
+.table-details tbody tr:first-child td {
+    padding-top: 15px; 
+}
+.table-details tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    text-align: right;
+    font-weight: 700;
+}
+.table-details tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.08); /* Hover effect */
+}
+
+/* Agregar estos estilos al final del archivo */
+
+/* Modal de Detalle de Actividades */
+.detail-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    align-items: start;
+}
+
+.detail-icon {
+    color: var(--calypso);
+    width: 25px;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.detail-label {
+    color: #888;
+    min-width: 100px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.detail-value {
+    color: white;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.fc-event {
+    border: none !important;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: 1px 0;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.fc-event:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+}
+
+.fc-daygrid-event-dot {
+    display: none;
+}
+
+.fc-event-time {
+    font-weight: 600;
+}
+
+.fc-event-title {
+    font-weight: 500;
+}
+
+/* Mejorar vista responsive */
+@media (max-width: 768px) {
+    .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .fc-toolbar-title {
+        font-size: 1.2rem !important;
+    }
+}

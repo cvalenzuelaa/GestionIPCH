@@ -117,36 +117,54 @@ function toggleNotificaciones() {
     }
 }
 
-// ...existing code...
-
 function gestionarClick(id, tipo) {
-    // Marcar como leída
     const fd = new FormData();
     fd.append('accion', 'markRead');
     fd.append('idnotificacion', id);
     fetch('/app/controllers/notificacionesController.php', { method: 'POST', body: fd });
 
-    // Redirigir según tipo y rol del usuario
-    let url = '/dashadmin';
+    // DETECTAR ROL DEL USUARIO ACTUAL
+    let url = '/dashboard'; // DEFAULT: usuario normal
     
-    // Detectar si es superusuario
-    const isSuper = window.location.pathname.includes('superu');
+    const isAdmin = window.location.pathname.includes('admin') || window.location.pathname.includes('dashadmin');
+    const isSuper = window.location.pathname.includes('superu') || window.location.pathname.includes('dashsuperu');
     
+    // MAPEO DE RUTAS SEGÚN TIPO Y ROL
     switch(tipo) {
         case 'alabanza': 
-            url = isSuper ? '/alabanzassuperu' : '/alabanzas'; 
+            if (isSuper) url = '/alabanzassuperu';
+            else if (isAdmin) url = '/alabanzas';
+            else url = '/misalabanzas'; // USUARIO NORMAL
             break;
+            
         case 'oracion': 
-            url = isSuper ? '/oracionessuperu' : '/oraciones'; 
+            if (isSuper) url = '/oracionessuperu';
+            else if (isAdmin) url = '/oraciones';
+            else url = '/misoraciones'; // USUARIO NORMAL
             break;
+            
         case 'actividad': 
-            url = isSuper ? '/actividadessuperu' : '/actividades'; 
+            if (isSuper) url = '/actividadessuperu';
+            else if (isAdmin) url = '/actividades';
+            else url = '/misactividades'; // USUARIO NORMAL
             break;
+            
         case 'sermon':
-            url = isSuper ? '/sermonessuperu' : '/sermones';
+            if (isSuper) url = '/sermonessuperu';
+            else if (isAdmin) url = '/sermones';
+            else url = '/missermones'; // USUARIO NORMAL
             break;
+            
         case 'cumpleanos': 
-            url = isSuper ? '/actividadessuperu' : '/actividades'; 
+            if (isSuper) url = '/actividadessuperu';
+            else if (isAdmin) url = '/actividades';
+            else url = '/misactividades'; // USUARIO NORMAL
+            break;
+            
+        default:
+            if (isSuper) url = '/dashsuperu';
+            else if (isAdmin) url = '/dashadmin';
+            else url = '/dashboard'; // USUARIO NORMAL
             break;
     }
     

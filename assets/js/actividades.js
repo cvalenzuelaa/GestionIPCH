@@ -3,18 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('activityModal');
     const form = document.getElementById('activityForm');
     const responsableSelect = document.getElementById('responsableSelect');
-
     const attModal = document.getElementById('attendanceModal');
     const attBody = document.getElementById('attendanceListBody');
     const searchInput = document.getElementById('searchMemberAtt');
-
     const detailModal = document.getElementById('detailsModal');
 
     cargarResponsables();
 
-    // ==========================================
-    // CONFIGURACIÓN DEL CALENDARIO
-    // ==========================================
     window.calendarObj = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         locale: 'es',
@@ -24,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
             right: 'dayGridMonth,timeGridWeek'
         },
         buttonText: { today: 'Hoy', month: 'Mes', week: 'Semana' },
-        navLinks: true, 
-        dayMaxEvents: true, 
+        navLinks: true,
+        dayMaxEvents: true,
         height: 'auto',
 
         events: function(info, successCallback, failureCallback) {
@@ -33,56 +28,69 @@ document.addEventListener('DOMContentLoaded', function() {
             fd.append('accion', 'getCalendarEvents');
             fd.append('start', info.startStr);
             fd.append('end', info.endStr);
+
             fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
-                .then(r => r.json())
-                .then(d => d.error ? failureCallback(d.error) : successCallback(d))
-                .catch(e => failureCallback(e));
+            .then(r => r.json())
+            .then(data => successCallback(data))
+            .catch(err => failureCallback(err));
         },
 
         dateClick: function(info) {
-            if(typeof USER_ROLE !== 'undefined' && USER_ROLE !== 'admin') return;
-            form.reset();
-            document.getElementById('fecha').value = info.dateStr;
-            modal.classList.add('active');
+            if (typeof USER_ROLE !== 'undefined' && USER_ROLE === 'admin') {
+                document.getElementById('activityDate').value = info.dateStr;
+                openModal();
+            }
         },
 
         eventClick: function(info) {
             const props = info.event.extendedProps;
             
-            // CUMPLEAÑOS
             if (props.tipo === 'cumpleanos') {
                 const nombreCompleto = info.event.title.replace('🎂 ', '');
-                mostrarModalCumpleanos(nombreCompleto);
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎂 ¡Cumpleaños!',
+                    text: `Hoy es el cumpleaños de ${nombreCompleto}`,
+                    confirmButtonColor: '#18c5a3'
+                });
                 return;
             }
 
-            // ORACIONES
             if (props.tipo === 'oracion') {
-                mostrarModalOracion(
-                    props.solicitante, 
-                    props.desc,
-                    info.event.start
-                );
+                const fechaStr = info.event.start ? new Date(info.event.start).toLocaleDateString('es-ES') : '';
+                Swal.fire({
+                    icon: 'info',
+                    title: '🙏 Oración',
+                    html: `<strong>Solicitante:</strong> ${props.solicitante}<br><strong>Fecha:</strong> ${fechaStr}<br><br>${props.desc}`,
+                    confirmButtonColor: '#2b66b3'
+                });
                 return;
             }
 
-            // ACTIVIDADES
             const idReal = info.event.id.replace('act_', '');
 
+            if (props.estado === 'finalizada') {
+                abrirDetallesFinalizada(info.event, props);
+                return;
+            }
+
             if (typeof USER_ROLE !== 'undefined' && USER_ROLE === 'admin') {
-                mostrarConfirmacion(
-                    '¿Qué deseas hacer?',
-                    `Actividad: "${info.event.title}"\n\n¿Deseas registrar la asistencia o ver los detalles?`,
-                    'Tomar Asistencia',
-                    'Ver Detalles',
-                    function(result) {
-                        if (result) {
-                            abrirAsistencia(idReal, info.event.title);
-                        } else {
-                            abrirDetalles(info.event, props);
-                        }
+                Swal.fire({
+                    title: '¿Qué deseas hacer?',
+                    text: `Actividad: "${info.event.title}"`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#18c5a3',
+                    cancelButtonColor: '#2b66b3',
+                    confirmButtonText: 'Tomar Asistencia',
+                    cancelButtonText: 'Ver Detalles'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        abrirAsistencia(idReal, info.event.title);
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        abrirDetalles(info.event, props);
                     }
-                );
+                });
             } else {
                 abrirDetalles(info.event, props);
             }
@@ -91,119 +99,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.calendarObj.render();
 
-    // ==========================================
-    // FUNCIONES DE MODALES PERSONALIZADOS
-    // ==========================================
-
-    // Modal de Cumpleaños
-    window.mostrarModalCumpleanos = function(nombre) {
-        document.getElementById('birthdayName').textContent = nombre;
-        document.getElementById('birthdayModal').classList.add('active');
-    };
-
-    window.closeBirthdayModal = function() {
-        document.getElementById('birthdayModal').classList.remove('active');
-    };
-
-    // Modal de Oración
-    window.mostrarModalOracion = function(solicitante, descripcion, fecha) {
-        document.getElementById('prayerSolicitante').textContent = solicitante || 'Anónimo';
-        document.getElementById('prayerDesc').textContent = descripcion || 'Sin descripción';
-        
-        if (fecha) {
-            const fechaFormato = fecha.toLocaleDateString('es-ES', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric' 
+    function cargarResponsables() {
+        const fd = new FormData();
+        fd.append('accion', 'getResponsables');
+        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            responsableSelect.innerHTML = '<option value="">Seleccionar responsable</option>';
+            data.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.idmiembro;
+                opt.textContent = `${m.nombre} ${m.apellido}`;
+                responsableSelect.appendChild(opt);
             });
-            const horaFormato = fecha.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            document.getElementById('prayerDate').textContent = fechaFormato;
-            document.getElementById('prayerTime').textContent = horaFormato;
-        }
-        
-        document.getElementById('prayerModal').classList.add('active');
-    };
-
-    window.closePrayerModal = function() {
-        document.getElementById('prayerModal').classList.remove('active');
-    };
-
-    // Modal de Detalles
-    window.abrirDetalles = function(event, props) {
-        document.getElementById('detailTitle').innerText = event.title;
-        
-        const fecha = event.start.toLocaleDateString('es-ES', { 
-            weekday: 'long', 
-            day: 'numeric', 
-            month: 'long' 
         });
+    }
+
+    window.openModal = function() { modal.classList.add('active'); };
+    window.closeModal = function() { modal.classList.remove('active'); form.reset(); };
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const fd = new FormData(form);
+        fd.append('accion', 'insert');
+
+        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.conflict) {
+                Swal.fire({
+                    title: 'Conflicto de horario',
+                    html: data.message + ':<br><br>' + data.details.join('<br>'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar de todas formas',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fd.append('force_save', '1');
+                        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) {
+                                Swal.fire('¡Éxito!', 'Actividad creada', 'success');
+                                closeModal();
+                                window.calendarObj.refetchEvents();
+                            } else {
+                                Swal.fire('Error', res.error, 'error');
+                            }
+                        });
+                    }
+                });
+            } else if (data.success) {
+                Swal.fire('¡Éxito!', 'Actividad creada', 'success');
+                closeModal();
+                window.calendarObj.refetchEvents();
+            } else {
+                Swal.fire('Error', data.error, 'error');
+            }
+        });
+    });
+
+    window.abrirDetalles = function(event, props) {
+        const fecha = event.start.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
         const inicio = event.start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         const fin = event.end ? event.end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '??:??';
         
+        document.getElementById('detailTitle').innerText = event.title;
         document.getElementById('detailDate').innerText = fecha.charAt(0).toUpperCase() + fecha.slice(1);
         document.getElementById('detailTime').innerText = `${inicio} - ${fin} hrs`;
-        document.getElementById('detailType').innerText = props.tipo ? 
-            props.tipo.charAt(0).toUpperCase() + props.tipo.slice(1) : 'Actividad';
+        document.getElementById('detailType').innerText = props.tipo ? props.tipo.charAt(0).toUpperCase() + props.tipo.slice(1) : 'Actividad';
         document.getElementById('detailResp').innerText = props.responsable || 'No asignado';
-        document.getElementById('detailDesc').innerText = props.desc || 'No hay descripción disponible.';
-
+        document.getElementById('detailDesc').innerText = props.desc || 'Sin descripción';
         detailModal.classList.add('active');
     };
 
-    window.closeDetailsModal = function() {
-        detailModal.classList.remove('active');
+    window.abrirDetallesFinalizada = function(event, props) {
+        abrirDetalles(event, props);
+        const detailTitle = document.getElementById('detailTitle');
+        detailTitle.innerHTML = `${event.title} <span style="background: rgba(107, 114, 128, 0.3); color: #9ca3af; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; margin-left: 10px; border: 1px solid #6b7280;">✅ Finalizada</span>`;
     };
 
-    // Modal de Confirmación
-    let confirmCallback = null;
+    window.closeDetailsModal = function() { detailModal.classList.remove('active'); };
 
-    window.mostrarConfirmacion = function(pregunta, mensaje, btnSi = 'Aceptar', btnNo = 'Cancelar', callback) {
-        document.getElementById('confirmQuestion').textContent = pregunta;
-        document.getElementById('confirmMessage').textContent = mensaje;
-        
-        // Actualizar textos de botones
-        const btnYes = document.querySelector('.btn-confirm-yes');
-        const btnNoBtn = document.querySelector('.btn-confirm-no');
-        
-        btnYes.innerHTML = `<i class="fas fa-check"></i> ${btnSi}`;
-        btnNoBtn.innerHTML = `<i class="fas fa-times"></i> ${btnNo}`;
-        
-        confirmCallback = callback;
-        document.getElementById('confirmModal').classList.add('active');
-    };
-
-    window.closeConfirmModal = function(result) {
-        document.getElementById('confirmModal').classList.remove('active');
-        if (confirmCallback) {
-            confirmCallback(result);
-            confirmCallback = null;
-        }
-    };
-
-    // Modal de Alerta (Success/Error)
-    window.mostrarAlerta = function(tipo, titulo, mensaje) {
-        const iconEl = document.getElementById('alertIcon');
-        
-        if (tipo === 'success') {
-            iconEl.className = 'alert-icon success';
-            iconEl.innerHTML = '<i class="fas fa-check-circle"></i>';
-        } else {
-            iconEl.className = 'alert-icon error';
-            iconEl.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
-        }
-        
-        document.getElementById('alertTitle').textContent = titulo;
-        document.getElementById('alertMessage').textContent = mensaje;
-        document.getElementById('alertModal').classList.add('active');
-    };
-
-    window.closeAlertModal = function() {
-        document.getElementById('alertModal').classList.remove('active');
-    };
-
-    // ==========================================
-    // LÓGICA DE ASISTENCIA
-    // ==========================================
     window.abrirAsistencia = function(idActividad, titulo) {
         document.getElementById('attTitle').innerText = 'Asistencia: ' + titulo;
         document.getElementById('att_idactividad').value = idActividad;
@@ -217,27 +195,25 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(data => {
-            if(data.error) { 
-                mostrarAlerta('error', 'Error', data.error);
-                closeAttendanceModal(); 
-                return; 
+            if(data.success) {
+                renderAttendanceTable(data.miembros);
+            } else {
+                Swal.fire('Error', data.error, 'error');
+                closeAttendanceModal();
             }
-            renderAttendanceTable(data.miembros, data.asistencia);
         });
     };
 
-    function renderAttendanceTable(miembros, asistenciaMap) {
+    function renderAttendanceTable(miembros) {
         let html = '';
         let count = 0;
+        
         miembros.forEach(m => {
-            const estadoActual = asistenciaMap[m.idmiembro] || 'Ausente'; 
-            const isChecked = estadoActual === 'Presente';
+            const isChecked = m.asistencia_estado === 'Presente';
             if(isChecked) count++;
             
-            const rowClass = isChecked ? 'presente' : '';
-            
             html += `
-            <tr class="${rowClass}">
+            <tr class="${isChecked ? 'presente' : ''}">
                 <td>
                     <div class="member-info">
                         <span class="member-name">${m.apellido}, ${m.nombre}</span>
@@ -245,16 +221,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td style="text-align:center;">
-                    <span class="status-badge ${isChecked ? 'presente' : 'ausente'}">
-                        ${isChecked ? 'Presente' : 'Ausente'}
-                    </span>
+                    <span class="status-badge ${isChecked ? 'presente' : 'ausente'}">${isChecked ? 'Presente' : 'Ausente'}</span>
                 </td>
                 <td style="text-align:center;">
-                    <input type="checkbox" class="attendance-checkbox att-check" value="${m.idmiembro}" ${isChecked ? 'checked' : ''} 
-                        onchange="updateRowStyle(this)">
+                    <input type="checkbox" class="attendance-checkbox att-check" value="${m.idmiembro}" ${isChecked ? 'checked' : ''} onchange="updateRowStyle(this)">
                 </td>
             </tr>`;
         });
+        
         attBody.innerHTML = html;
         document.getElementById('totalPresentes').innerText = count;
     }
@@ -278,136 +252,38 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('totalPresentes').innerText = document.querySelectorAll('.att-check:checked').length;
     };
 
-    window.updateRowStyle = function(chk) {
-        const row = chk.closest('tr');
-        const badge = row.querySelector('.badge');
-        if(chk.checked) {
-            row.style.background = '#e6fffa'; 
-            badge.style.background = '#10b981'; 
-            badge.innerText = 'Presente';
-        } else {
-            row.style.background = '#fff'; 
-            badge.style.background = '#ef4444'; 
-            badge.innerText = 'Ausente';
-        }
-        document.getElementById('totalPresentes').innerText = document.querySelectorAll('.att-check:checked').length;
-    };
+    window.closeAttendanceModal = function() { attModal.classList.remove('active'); };
 
     window.submitAttendance = function() {
         const idActividad = document.getElementById('att_idactividad').value;
         const checks = document.querySelectorAll('.att-check:checked');
-        const lista = [];
-        checks.forEach(c => lista.push({ id: c.value, estado: 'Presente' }));
+        const asistentes = [];
+        
+        checks.forEach(c => asistentes.push({ id: c.value, estado: 'Presente' }));
 
         const fd = new FormData();
         fd.append('accion', 'saveAttendance');
         fd.append('idactividad', idActividad);
-        fd.append('lista', JSON.stringify(lista));
+        fd.append('asistentes', JSON.stringify(asistentes));
 
         fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(data => {
             if(data.success) { 
-                mostrarAlerta('success', '✅ Éxito', 'Asistencia guardada correctamente');
-                closeAttendanceModal(); 
+                Swal.fire('¡Éxito!', 'Asistencia guardada', 'success');
+                closeAttendanceModal();
             } else { 
-                mostrarAlerta('error', '❌ Error', data.error || 'No se pudo guardar');
+                Swal.fire('Error', data.error, 'error');
             }
         });
     };
 
-    if(searchInput) {
-        searchInput.addEventListener('keyup', function() {
-            const term = this.value.toLowerCase();
-            attBody.querySelectorAll('tr').forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(term) ? '' : 'none';
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            attBody.querySelectorAll('tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
             });
         });
     }
-
-    window.closeAttendanceModal = function() { 
-        attModal.classList.remove('active'); 
-    };
-
-    // ==========================================
-    // GUARDAR ACTIVIDAD
-    // ==========================================
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(form);
-        formData.append('accion', 'insert');
-        
-        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: formData })
-        .then(res => res.json())
-        .then(data => {
-            if (data.conflict) {
-                mostrarConfirmacion(
-                    '⚠️ Conflicto de Horario',
-                    data.message + '\n\n¿Deseas guardar de todos modos?',
-                    'Guardar igual',
-                    'Cancelar',
-                    function(result) {
-                        if (result) {
-                            formData.append('force_save', 'true');
-                            guardarForzado(formData);
-                        }
-                    }
-                );
-            } else if (data.success) {
-                mostrarAlerta('success', '✅ Éxito', 'Actividad guardada correctamente');
-                form.reset(); 
-                closeModal(); 
-                window.calendarObj.refetchEvents();
-            } else { 
-                mostrarAlerta('error', '❌ Error', data.error || 'Error desconocido');
-            }
-        });
-    });
-
-    function guardarForzado(fd) {
-        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) { 
-                mostrarAlerta('success', '✅ Guardado', 'Actividad creada correctamente');
-                form.reset(); 
-                closeModal(); 
-                window.calendarObj.refetchEvents(); 
-            }
-        });
-    }
-
-    function cargarResponsables() {
-        const fd = new FormData();
-        fd.append('accion', 'getResponsables');
-        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(data => {
-            let html = '<option value="">Seleccione...</option>';
-            if(Array.isArray(data)) {
-                data.forEach(m => html += `<option value="${m.idmiembro}">${m.nombre} ${m.apellido}</option>`);
-            }
-            if(responsableSelect) responsableSelect.innerHTML = html;
-        });
-    }
-
-    const btnSum = document.getElementById('btnSummary');
-    if(btnSum) {
-        btnSum.addEventListener('click', function() {
-            const date = window.calendarObj.getDate();
-            window.location.href = `/app/controllers/actividadesController.php?accion=exportExcel&year=${date.getFullYear()}&month=${date.getMonth() + 1}`;
-        });
-    }
-
-    window.closeModal = function() { 
-        modal.classList.remove('active'); 
-        form.reset(); 
-    };
-
-    // Cerrar modales al hacer clic fuera
-    window.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal')) {
-            e.target.classList.remove('active');
-        }
-    });
 });

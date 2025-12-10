@@ -15,6 +15,7 @@
     
     <!-- Scripts globales -->
     <script src="/assets/js/globales.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <title>Panel Administrativo - Gestión IPCH</title>
 </head>

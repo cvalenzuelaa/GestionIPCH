@@ -146,7 +146,7 @@ function gestionarClick(id, tipo) {
             url = isSuper ? '/sermonessuperu' : '/sermones';
             break;
         case 'cumpleanos': 
-            url = '/gestionmiembros'; 
+            url = isSuper ? '/actividadessuperu' : '/actividades'; 
             break;
     }
     

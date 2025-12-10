@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================================
 // FUNCIÓN IDÉNTICA A MISACTIVIDADES.JS
 // ==========================================
+// BUSCA function mostrarDetalle(event) y REEMPLÁZALA COMPLETA:
 function mostrarDetalle(event) {
     const props = event.extendedProps;
     
@@ -141,17 +142,20 @@ function mostrarDetalle(event) {
 
     let detalle = '';
 
-    // Según el tipo de evento
     if (props.tipo === 'actividad') {
-        const tipos = {
-            'culto': 'Culto',
-            'reunion': 'Reunión',
-            'ensayo': 'Ensayo',
-            'evento_especial': 'Evento Especial',
-            'otro': 'Otro'
-        };
+        // NUEVO: Badge de finalizada
+        let estadoBadge = '';
+        if (props.estado === 'finalizada') {
+            estadoBadge = `
+            <div class="detail-row" style="background: rgba(107, 114, 128, 0.2); border-left: 3px solid #6b7280; padding: 15px; margin-bottom: 10px;">
+                <i class="fas fa-check-circle detail-icon" style="color: #9ca3af;"></i>
+                <span class="detail-value" style="color: #9ca3af; font-size: 1.1rem; font-weight: 700;">
+                    ✅ ACTIVIDAD FINALIZADA
+                </span>
+            </div>`;
+        }
 
-        detalle = `
+        detalle = estadoBadge + `
             <div class="detail-row">
                 <i class="fas fa-calendar detail-icon"></i>
                 <span class="detail-label">Fecha:</span>
@@ -189,60 +193,34 @@ function mostrarDetalle(event) {
     else if (props.tipo === 'oracion') {
         detalle = `
             <div class="detail-row">
-                <i class="fas fa-pray detail-icon"></i>
-                <span class="detail-label">Tipo:</span>
-                <span class="detail-value">Petición de Oración</span>
-            </div>
-
-            <div class="detail-row">
-                <i class="fas fa-calendar detail-icon"></i>
-                <span class="detail-label">Fecha:</span>
-                <span class="detail-value">${event.start.toLocaleDateString('es-ES', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}</span>
-            </div>
-
-            <div class="detail-row">
-                <i class="fas fa-user detail-icon"></i>
+                <i class="fas fa-praying-hands detail-icon"></i>
                 <span class="detail-label">Solicitante:</span>
                 <span class="detail-value">${props.solicitante}</span>
             </div>
 
-            ${props.desc ? `
-            <div class="detail-row">
-                <i class="fas fa-hands-praying detail-icon"></i>
-                <span class="detail-label">Petición:</span>
-                <span class="detail-value" style="font-style:italic;">"${props.desc}"</span>
-            </div>` : ''}
-        `;
-    }
-    else if (props.tipo === 'cumpleanos') {
-        detalle = `
-            <div class="detail-row">
-                <i class="fas fa-birthday-cake detail-icon"></i>
-                <span class="detail-label">Tipo:</span>
-                <span class="detail-value">Cumpleaños</span>
-            </div>
-
             <div class="detail-row">
                 <i class="fas fa-calendar detail-icon"></i>
                 <span class="detail-label">Fecha:</span>
-                <span class="detail-value">${event.start.toLocaleDateString('es-ES', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}</span>
+                <span class="detail-value">${event.start.toLocaleDateString('es-ES')}</span>
             </div>
 
-            <div class="detail-row" style="background: rgba(255,107,107,0.1); border-left: 3px solid #ff6b6b;">
-                <i class="fas fa-gift detail-icon" style="color: #ff6b6b;"></i>
-                <span class="detail-value" style="color: white; font-size: 1.1rem;">
-                    ¡Que Dios bendiga a <strong>${event.title.replace('🎂 ', '')}</strong> en su día especial!
-                </span>
+            <div class="detail-row">
+                <i class="fas fa-comment-dots detail-icon"></i>
+                <span class="detail-label">Motivo:</span>
+                <span class="detail-value">${props.desc}</span>
+            </div>
+        `;
+    } 
+    else if (props.tipo === 'cumpleanos') {
+        detalle = `
+            <div class="detail-row" style="text-align:center; padding:20px;">
+                <i class="fas fa-birthday-cake" style="font-size:3rem; color:#ec4899; margin-bottom:10px;"></i>
+                <h3 style="color:#ec4899; margin:10px 0;">¡Feliz Cumpleaños!</h3>
+                <p style="font-size:1.1rem;">${props.nombre}</p>
+                <p style="color:#9ca3af;">${event.start.toLocaleDateString('es-ES', { 
+                    day: 'numeric', 
+                    month: 'long' 
+                })}</p>
             </div>
         `;
     }

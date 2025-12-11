@@ -321,56 +321,6 @@ if (!isset($sesion['idusuario'])) { header('Location: /login'); exit; }
         text-align: center;
     }
 
-    .prayer-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid rgba(24, 197, 163, 0.3);
-    }
-
-    .prayer-icon {
-        font-size: 3rem;
-        color: #f59e0b;
-    }
-
-    .prayer-title h3 {
-        margin: 0;
-        color: white;
-        font-size: 1.3rem;
-        font-weight: 800;
-    }
-
-    .prayer-title p {
-        margin: 5px 0 0 0;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.9rem;
-    }
-
-    .prayer-text-box {
-        background: rgba(245, 158, 11, 0.1);
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 4px solid #f59e0b;
-        margin-bottom: 15px;
-    }
-
-    .prayer-text {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
-        line-height: 1.6;
-        font-style: italic;
-    }
-
-    .prayer-meta {
-        display: flex;
-        justify-content: space-between;
-        padding-top: 15px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.6);
-    }
 
     .confirm-actions {
         display: flex;
@@ -621,39 +571,37 @@ if (!isset($sesion['idusuario'])) { header('Location: /login'); exit; }
     </div>
 </div>
 
-<!-- Modal de Oración -->
 <div id="prayerModal" class="modal">
-    <div class="modal-content" style="max-width: 650px;">
+    <div class="modal-content" style="max-width: 600px;">
         <div class="modal-header">
             <h2><i class="fas fa-praying-hands"></i> Petición de Oración</h2>
             <button class="modal-close" onclick="closePrayerModal()">&times;</button>
         </div>
         
-        <div class="prayer-content">
-            <div class="prayer-header">
-                <div class="prayer-icon">🙏</div>
-                <div class="prayer-title">
-                    <h3 id="prayerSolicitante">Solicitante</h3>
-                    <p>Solicita intercesión en oración</p>
+        <div class="modal-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label"><i class="fas fa-user"></i> Solicitante</span>
+                    <span class="detail-value" id="prayerSolicitante">Sin especificar</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label"><i class="fas fa-calendar-day"></i> Fecha</span>
+                    <span class="detail-value" id="prayerDate">--/--/----</span>
                 </div>
             </div>
 
-            <div class="prayer-text-box">
-                <div class="prayer-text" id="prayerDesc">
-                    Descripción de la petición de oración...
+            <div>
+                <span class="detail-label" style="display:block; margin-bottom: 10px;">
+                    <i class="fas fa-praying-hands"></i> Motivo de Oración
+                </span>
+                <div class="detail-description" id="prayerDesc">
+                    Sin descripción disponible.
                 </div>
-            </div>
-
-            <div class="prayer-meta">
-                <span><i class="fas fa-calendar"></i> <span id="prayerDate">Fecha</span></span>
-                <span><i class="fas fa-clock"></i> <span id="prayerTime">Hora</span></span>
             </div>
         </div>
 
         <div class="form-actions">
-            <button type="button" class="btn-save" onclick="closePrayerModal()">
-                <i class="fas fa-check"></i> Cerrar
-            </button>
+            <button type="button" class="btn-cancel-glass" onclick="closePrayerModal()">Cerrar</button>
         </div>
     </div>
 </div>

@@ -1,7 +1,6 @@
 <?php
 error_reporting(0);
 ini_set('display_errors', 0);
-header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../sesiones/session.php';
 $sesionObj = new Session();
@@ -14,9 +13,46 @@ $obj = new ActividadesModel();
 $idUsuario = $usuarioData['idusuario'] ?? null;
 
 if (!$accion) {
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['error' => 'No se especificó ninguna acción']);
     exit;
 }
+
+// CASO ESPECIAL: exportExcel NO devuelve JSON, devuelve archivo Excel
+if ($accion === 'exportExcel') {
+    try {
+        if (!isset($_GET['year']) || !isset($_GET['month'])) {
+            die('Error: Faltan parámetros año y mes');
+        }
+        
+        $year = intval($_GET['year']);
+        $month = intval($_GET['month']);
+        
+        // Verificar que existe el archivo exportador
+        $exporterPath = __DIR__ . '/../exportar/exportarActividades.php';
+        if (!file_exists($exporterPath)) {
+            die('Error: No se encontró el archivo exportarActividades.php en ' . $exporterPath);
+        }
+        
+        // Verificar que existe autoload de composer
+        $autoloadPath = __DIR__ . '/../../vendor/autoload.php';
+        if (!file_exists($autoloadPath)) {
+            die('Error: PhpSpreadsheet no está instalado. Ejecuta: composer require phpoffice/phpspreadsheet');
+        }
+        
+        require_once $exporterPath;
+        
+        $exporter = new ExportarActividades();
+        $exporter->generarResumenMensual($year, $month);
+        exit;
+        
+    } catch (Exception $e) {
+        die('Error al generar Excel: ' . $e->getMessage() . '<br>Línea: ' . $e->getLine() . '<br>Archivo: ' . $e->getFile());
+    }
+}
+
+// Para el resto de acciones, devolver JSON
+header('Content-Type: application/json; charset=utf-8');
 
 switch ($accion) {
     case 'getResponsables':

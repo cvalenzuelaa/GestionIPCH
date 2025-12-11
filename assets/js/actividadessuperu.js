@@ -111,11 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const btnSum = document.getElementById('btnSummary');
-    if(btnSum) {
-        btnSum.addEventListener('click', function() {
+    const btnSummary = document.getElementById('btnSummary');
+    if (btnSummary) {
+        btnSummary.addEventListener('click', function() {
             const date = window.calendarObj.getDate();
-            window.location.href = `/app/controllers/actividadesController.php?accion=exportExcel&year=${date.getFullYear()}&month=${date.getMonth() + 1}`;
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            
+            console.log('Descargando resumen:', year, month);
+            
+            window.location.href = `/app/controllers/actividadesController.php?accion=exportExcel&year=${year}&month=${month}`;
         });
     }
 

@@ -151,13 +151,16 @@ function listarMiembros() {
                             <div style="font-size:0.85rem; color:rgba(255,255,255,0.6);">${m.rut}</div>
                         </td>
                         <td><span style="padding:5px 8px; border-radius:6px; font-size:0.8rem; font-weight:700; ${badge}">${m.estado}</span></td>
-                        <td>${m.telefono || '-'}</td>
+                        <td>
+                            ${m.telefono ? `<i class="fas fa-phone"></i> ${m.telefono}<br>` : ''}
+                            ${m.correo ? `<i class="fas fa-envelope"></i> ${m.correo}` : ''}
+                        </td>
                         <td>
                             <div class="action-buttons-container">
                                 <button class="btn-action btn-edit" onclick="editarMiembro('${m.idmiembro}')"><i class="fas fa-pen"></i>Editar</button>
                                 <button class="btn-action btn-pastoral" onclick="abrirHojaVida('${m.idmiembro}')"><i class="fas fa-book-medical"></i>Interacción Pastoral</button>
                                 <button class="btn-action btn-stats" onclick="abrirEstadisticas('${m.idmiembro}')"><i class="fas fa-chart-pie"></i>Asistencia</button>
-                                <button class="btn-action btn-delete" onclick="eliminarMiembro('${m.idmiembro}')"><i class="fas fa-trash"></i>Eliminar</button>
+                                <button class="btn-action btn-delete" onclick="eliminarMiembro('${m.idmiembro}')"><i class="fas fa-user-slash"></i>Descativar</button>
                             </div>
                         </td>
                     </tr>`;
@@ -336,11 +339,97 @@ function abrirEstadisticas(id) {
 }
 
 function eliminarMiembro(id) {
-    if(confirm('¿Eliminar miembro?')) {
+    if(confirm('⚠️ ¿Desactivar este miembro?\n\nEl miembro quedará inactivo pero se preservará todo su historial pastoral y asistencia.')) {
         $.ajax({
             url: '/app/controllers/miembrosController.php',
-            type: 'POST', data: { accion: 'delete', idmiembro: id }, dataType: 'json',
-            success: function(res) { res.success ? (mostrarAlerta('success', res.success), listarMiembros()) : mostrarAlerta('error', res.error); }
+            type: 'POST', 
+            data: { accion: 'delete', idmiembro: id }, 
+            dataType: 'json',
+            success: function(res) { 
+                if(res.success) {
+                    mostrarAlerta('success', res.success);
+                    listarMiembros();
+                } else {
+                    mostrarAlerta('error', res.error);
+                }
+            }
+        });
+    }
+}
+
+let mostrandoInactivos = false;
+
+function toggleInactivos() {
+    const btn = document.getElementById('btnInactivos');
+    mostrandoInactivos = !mostrandoInactivos;
+    
+    if (mostrandoInactivos) {
+        // Mostrar inactivos
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fas fa-eye"></i> Ver usuarios activos';
+        cargarInactivos();
+    } else {
+        // Mostrar activos
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Ver usuarios inactivos';
+        listarMiembros();
+    }
+}
+
+function cargarInactivos() {
+    $.ajax({
+        url: '/app/controllers/miembrosController.php',
+        type: 'POST',
+        data: { accion: 'getInactivos' },
+        dataType: 'json',
+        success: function(data) {
+            let html = '';
+            if (data.length > 0) {
+                data.forEach(m => {
+                    html += `
+                        <tr style="opacity: 0.6; background: rgba(255, 107, 107, 0.05);">
+                            <td>
+                                <strong>${m.nombre} ${m.apellido}</strong><br>
+                                <span style="color:var(--muted); font-size:0.85rem;">RUT: ${m.rut}</span>
+                            </td>
+                            <td><span class="badge" style="background:#666;">${m.estado}</span></td>
+                            <td>
+                                ${m.telefono ? `<i class="fas fa-phone"></i> ${m.telefono}<br>` : ''}
+                                ${m.correo ? `<i class="fas fa-envelope"></i> ${m.correo}` : ''}
+                            </td>
+                            <td style="text-align: right;">
+                                <button onclick="reactivarMiembro('${m.idmiembro}')" class="btn-icon">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                html = '<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--muted);">No hay miembros inactivos</td></tr>';
+            }
+            $('#tablaBody').html(html);
+        },
+        error: function() {
+            mostrarAlerta('error', 'Error al cargar miembros inactivos');
+        }
+    });
+}
+
+function reactivarMiembro(id) {
+    if(confirm('¿Reactivar este miembro?')) {
+        $.ajax({
+            url: '/app/controllers/miembrosController.php',
+            type: 'POST',
+            data: { accion: 'reactivar', idmiembro: id },
+            dataType: 'json',
+            success: function(res) {
+                if(res.success) {
+                    mostrarAlerta('success', res.success);
+                    cargarInactivos();
+                } else {
+                    mostrarAlerta('error', res.error);
+                }
+            }
         });
     }
 }

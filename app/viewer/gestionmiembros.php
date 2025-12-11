@@ -103,6 +103,89 @@ if (!isset($sesion['idusuario'])) {
         padding: 5px;
         border-bottom: 1px solid rgba(255,255,255,0.05);
     }
+    .btn-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-filter:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--calypso);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(24, 197, 163, 0.2);
+}
+
+.btn-filter:active {
+    transform: translateY(0);
+}
+
+.btn-filter i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-filter:hover i {
+    transform: rotate(15deg);
+}
+
+/* Estado activo del botón (cuando se muestran inactivos) */
+.btn-filter.active {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 165, 0, 0.2));
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-filter.active:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 165, 0, 0.3));
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: rgba(24, 197, 163, 0.1);
+    border: 1px solid rgba(24, 197, 163, 0.3);
+    border-radius: 10px;
+    color: var(--calypso);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-icon:hover {
+    background: rgba(24, 197, 163, 0.25);
+    border-color: var(--calypso);
+    transform: translateY(-2px) rotate(-15deg);
+    box-shadow: 0 4px 15px rgba(24, 197, 163, 0.4);
+}
+
+.btn-icon:active {
+    transform: translateY(0) rotate(0deg);
+}
+
+.btn-icon i {
+    transition: transform 0.3s ease;
+}
+
+.btn-icon:hover i {
+    transform: scale(1.1);
+}
+
 </style>
 
 <div class="container-fluid" style="padding: 24px;">
@@ -115,6 +198,9 @@ if (!isset($sesion['idusuario'])) {
                 estado de membresía, historial pastoral y asistencia.
             </p>
             <div class="calendar-actions">
+                <button class="btn-filter" onclick="toggleInactivos()" id="btnInactivos">
+                    <i class="fas fa-eye-slash"></i> Ver usuarios inactivos
+                </button>
                 <div style="flex-grow: 1;"></div>
                 <button class="btn-add-activity" onclick="nuevoMiembro()" title="Registrar nuevo miembro">
                     <i class="fas fa-user-plus"></i>

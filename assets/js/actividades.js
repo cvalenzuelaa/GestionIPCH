@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const attBody = document.getElementById('attendanceListBody');
     const searchInput = document.getElementById('searchMemberAtt');
     const detailModal = document.getElementById('detailsModal');
+    const birthdayModal = document.getElementById('birthdayModal');
+    const prayerModal = document.getElementById('prayerModal');
 
     cargarResponsables();
 
@@ -47,23 +49,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (props.tipo === 'cumpleanos') {
                 const nombreCompleto = info.event.title.replace('🎂 ', '');
-                Swal.fire({
-                    icon: 'success',
-                    title: '🎂 ¡Cumpleaños!',
-                    text: `Hoy es el cumpleaños de ${nombreCompleto}`,
-                    confirmButtonColor: '#18c5a3'
-                });
+                document.getElementById('birthdayName').innerText = nombreCompleto;
+                birthdayModal.classList.add('active');
                 return;
             }
 
             if (props.tipo === 'oracion') {
-                const fechaStr = info.event.start ? new Date(info.event.start).toLocaleDateString('es-ES') : '';
-                Swal.fire({
-                    icon: 'info',
-                    title: '🙏 Oración',
-                    html: `<strong>Solicitante:</strong> ${props.solicitante}<br><strong>Fecha:</strong> ${fechaStr}<br><br>${props.desc}`,
-                    confirmButtonColor: '#2b66b3'
-                });
+                const fechaStr = info.event.start ? new Date(info.event.start).toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }) : 'Sin fecha';
+                
+                  const fechaFormatted = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
+
+                document.getElementById('prayerSolicitante').innerText = props.solicitante || 'Anónimo';
+                document.getElementById('prayerDesc').innerText = props.desc || 'Sin descripción';
+                document.getElementById('prayerDate').innerText = fechaStr;
+                prayerModal.classList.add('active');
                 return;
             }
 
@@ -75,22 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (typeof USER_ROLE !== 'undefined' && USER_ROLE === 'admin') {
-                Swal.fire({
-                    title: '¿Qué deseas hacer?',
-                    text: `Actividad: "${info.event.title}"`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#18c5a3',
-                    cancelButtonColor: '#2b66b3',
-                    confirmButtonText: 'Tomar Asistencia',
-                    cancelButtonText: 'Ver Detalles'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        abrirAsistencia(idReal, info.event.title);
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        abrirDetalles(info.event, props);
-                    }
-                });
+                // Guardar datos para el modal de opciones
+                detailModal.setAttribute('data-idactividad', idReal);
+                detailModal.setAttribute('data-titulo', info.event.title);
+                
+                abrirDetalles(info.event, props);
             } else {
                 abrirDetalles(info.event, props);
             }
@@ -127,35 +120,27 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(r => r.json())
         .then(data => {
             if (data.conflict) {
-                Swal.fire({
-                    title: 'Conflicto de horario',
-                    html: data.message + ':<br><br>' + data.details.join('<br>'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Guardar de todas formas',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fd.append('force_save', '1');
-                        fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
-                        .then(r => r.json())
-                        .then(res => {
-                            if (res.success) {
-                                Swal.fire('¡Éxito!', 'Actividad creada', 'success');
-                                closeModal();
-                                window.calendarObj.refetchEvents();
-                            } else {
-                                Swal.fire('Error', res.error, 'error');
-                            }
-                        });
-                    }
-                });
+                alert('⚠️ Conflicto de horario:\n\n' + data.message + '\n\n' + data.details.join('\n') + '\n\n¿Desea guardar de todas formas?');
+                if(confirm('¿Continuar?')) {
+                    fd.append('force_save', '1');
+                    fetch('/app/controllers/actividadesController.php', { method: 'POST', body: fd })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.success) {
+                            alert('✅ Actividad creada exitosamente');
+                            closeModal();
+                            window.calendarObj.refetchEvents();
+                        } else {
+                            alert('❌ Error: ' + res.error);
+                        }
+                    });
+                }
             } else if (data.success) {
-                Swal.fire('¡Éxito!', 'Actividad creada', 'success');
+                alert('✅ Actividad creada exitosamente');
                 closeModal();
                 window.calendarObj.refetchEvents();
             } else {
-                Swal.fire('Error', data.error, 'error');
+                alert('❌ Error: ' + data.error);
             }
         });
     });
@@ -165,12 +150,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const inicio = event.start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         const fin = event.end ? event.end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '??:??';
         
+        const idReal = event.id.replace('act_', '');
+        
         document.getElementById('detailTitle').innerText = event.title;
         document.getElementById('detailDate').innerText = fecha.charAt(0).toUpperCase() + fecha.slice(1);
         document.getElementById('detailTime').innerText = `${inicio} - ${fin} hrs`;
         document.getElementById('detailType').innerText = props.tipo ? props.tipo.charAt(0).toUpperCase() + props.tipo.slice(1) : 'Actividad';
         document.getElementById('detailResp').innerText = props.responsable || 'No asignado';
         document.getElementById('detailDesc').innerText = props.desc || 'Sin descripción';
+        
+        // Guardar datos en el modal
+        detailModal.setAttribute('data-idactividad', idReal);
+        detailModal.setAttribute('data-titulo', event.title);
+        
+        // Mostrar botón de asistencia solo para admin en actividades no finalizadas
+        const formActions = detailModal.querySelector('.form-actions');
+        if (typeof USER_ROLE !== 'undefined' && USER_ROLE === 'admin' && props.estado !== 'finalizada') {
+            formActions.innerHTML = `
+                <button type="button" class="btn-cancel-glass" onclick="closeDetailsModal()">Cerrar</button>
+                <button type="button" class="btn-save" onclick="abrirAsistenciaDesdeModal()">
+                    <i class="fas fa-user-check"></i> Tomar Asistencia
+                </button>
+            `;
+        } else {
+            formActions.innerHTML = `
+                <button type="button" class="btn-cancel-glass" onclick="closeDetailsModal()">Cerrar</button>
+            `;
+        }
+        
         detailModal.classList.add('active');
     };
 
@@ -181,12 +188,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.closeDetailsModal = function() { detailModal.classList.remove('active'); };
+    
+    window.closeBirthdayModal = function() { birthdayModal.classList.remove('active'); };
+    
+    window.closePrayerModal = function() { prayerModal.classList.remove('active'); };
+
+    window.abrirAsistenciaDesdeModal = function() {
+        const idActividad = detailModal.getAttribute('data-idactividad');
+        const titulo = detailModal.getAttribute('data-titulo');
+        
+        if (!idActividad || !titulo) {
+            alert('❌ Error: No se pudo obtener la información de la actividad');
+            return;
+        }
+        
+        abrirAsistencia(idActividad, titulo);
+    };
 
     window.abrirAsistencia = function(idActividad, titulo) {
         document.getElementById('attTitle').innerText = 'Asistencia: ' + titulo;
         document.getElementById('att_idactividad').value = idActividad;
         attBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">Cargando...</td></tr>';
         attModal.classList.add('active');
+        closeDetailsModal();
 
         const fd = new FormData();
         fd.append('accion', 'getAttendanceData');
@@ -198,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(data.success) {
                 renderAttendanceTable(data.miembros);
             } else {
-                Swal.fire('Error', data.error, 'error');
+                alert('❌ Error: ' + data.error);
                 closeAttendanceModal();
             }
         });
@@ -270,10 +294,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(r => r.json())
         .then(data => {
             if(data.success) { 
-                Swal.fire('¡Éxito!', 'Asistencia guardada', 'success');
+                alert('✅ Asistencia guardada correctamente');
                 closeAttendanceModal();
+                window.calendarObj.refetchEvents();
             } else { 
-                Swal.fire('Error', data.error, 'error');
+                alert('❌ Error: ' + data.error);
             }
         });
     };
@@ -286,4 +311,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    // ========== AGREGAR AQUÍ EL EVENT LISTENER ==========
+    const btnSummary = document.getElementById('btnSummary');
+    if (btnSummary) {
+        btnSummary.addEventListener('click', function() {
+            const currentDate = window.calendarObj.getDate();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            
+            console.log('Descargando resumen:', year, month);
+            
+            // Redireccionar a la descarga del Excel
+            window.location.href = `/app/controllers/actividadesController.php?accion=exportExcel&year=${year}&month=${month}`;
+        });
+    }
+
+    // Cerrar modales al hacer click fuera
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+        if (e.target === attModal) closeAttendanceModal();
+        if (e.target === detailModal) closeDetailsModal();
+        if (e.target === birthdayModal) closeBirthdayModal();
+        if (e.target === prayerModal) closePrayerModal();
+    });// <-
 });

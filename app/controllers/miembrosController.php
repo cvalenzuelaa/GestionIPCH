@@ -65,6 +65,18 @@ switch ($accion) {
     case 'delete':
         echo json_encode($obj->delete([$_POST['idmiembro']]));
         break;
+        
+    case 'getInactivos':
+        echo json_encode($obj->getInactivos());
+        break;
+    
+    case 'reactivar':
+        if (!isset($_POST['idmiembro'])) {
+            echo json_encode(array("error" => "Falta ID."));
+            exit;
+        }
+        echo json_encode($obj->reactivar([$_POST['idmiembro']]));
+        break;
 }
 
 class MiembrosController
@@ -76,6 +88,13 @@ class MiembrosController
     public function insert($arr) { return $this->model->insert($arr); }
     public function update($arr) { return $this->model->update($arr); }
     public function delete($arr) { return $this->model->delete($arr); }
+    public function getInactivos() { 
+        return $this->model->getInactivos(); 
+    }
+    
+    public function reactivar($arr) { 
+        return $this->model->reactivar($arr); 
+    }
 
     public function existeUnico($rut, $correo, $telefono) {
         $res = $this->model->existeUnico($rut, $correo, $telefono);

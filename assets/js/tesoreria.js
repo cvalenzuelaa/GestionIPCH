@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         formData.append('accion', 'insert');
 
-        // RUTA ABSOLUTA PARA EVITAR ERRORES 404
         fetch('/app/controllers/tesoreriaController.php', {
             method: 'POST',
             body: formData 
         })
-        .then(res => res.json()) // Si falla aquí es porque el PHP devuelve error
+        .then(res => res.json())
         .then(data => {
             if(data.success) {
                 mostrarAlerta('success', data.success);
@@ -34,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function cargarDatos() {
-    // 1. Obtener Tabla
     fetch('/app/controllers/tesoreriaController.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -43,7 +41,6 @@ function cargarDatos() {
     .then(r => r.json())
     .then(data => renderTabla(data));
 
-    // 2. Obtener Balance
     fetch('/app/controllers/tesoreriaController.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -88,8 +85,33 @@ function renderTabla(data) {
     $('#tablaTesoreria').DataTable({
         dom: 'Bfrtip',
         buttons: [
-            { extend: 'excel', text: 'Excel', className: 'btn-action btn-edit' },
-            { extend: 'pdf', text: 'PDF', className: 'btn-action btn-pastoral' }
+            { 
+                extend: 'excel', 
+                text: 'Exportar Excel', 
+                className: 'btn-action btn-edit',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4] // SOLO fecha, tipo, categoría, descripción, monto
+                },
+                title: 'Reporte Financiero - Tesorería'
+            },
+            { 
+                extend: 'pdf', 
+                text: 'Exportar PDF', 
+                className: 'btn-action btn-pastoral',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4] // SOLO fecha, tipo, categoría, descripción, monto
+                },
+                title: 'Reporte Financiero - Tesorería',
+                customize: function(doc) {
+                    doc.styles.title = {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center',
+                        margin: [0, 0, 0, 10]
+                    };
+                    doc.content[1].table.widths = ['15%', '15%', '18%', '32%', '20%'];
+                }
+            }
         ],
         language: { url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" },
         order: [[0, 'desc']],

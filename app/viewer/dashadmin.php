@@ -185,7 +185,7 @@
             <i class="fas fa-arrow-right card-arrow"></i>
         </div>
 
-        <div class="glass-card" onclick="window.location.href='/actividadesadmin'">
+        <div class="glass-card" onclick="window.location.href='/actividades'">
             <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
             <div class="card-content">
                 <h3>Actividades</h3>

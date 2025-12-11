@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     cargarDatos();
 
-    // Guardar
     const form = document.getElementById('inventarioForm');
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -68,8 +67,33 @@ function renderTabla(data) {
     $('#tablaInventario').DataTable({
         dom: 'Bfrtip',
         buttons: [
-            { extend: 'excel', text: 'Excel', className: 'btn-action btn-edit' },
-            { extend: 'pdf', text: 'PDF', className: 'btn-action btn-pastoral' }
+            { 
+                extend: 'excel', 
+                text: 'Exportar Excel', 
+                className: 'btn-action btn-edit',
+                exportOptions: {
+                    columns: [0, 1, 2] // SOLO fecha, descripción, monto
+                },
+                title: 'Inventario de Bienes - Iglesia'
+            },
+            { 
+                extend: 'pdf', 
+                text: 'Exportar PDF', 
+                className: 'btn-action btn-pastoral',
+                exportOptions: {
+                    columns: [0, 1, 2] // SOLO fecha, descripción, monto
+                },
+                title: 'Inventario de Bienes - Iglesia',
+                customize: function(doc) {
+                    doc.styles.title = {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center',
+                        margin: [0, 0, 0, 10]
+                    };
+                    doc.content[1].table.widths = ['20%', '50%', '30%'];
+                }
+            }
         ],
         language: { url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json" },
         order: [[0, 'desc']],
@@ -98,7 +122,6 @@ function eliminarBien(id) {
     }
 }
 
-// Utilidades
 const modal = document.getElementById('inventarioModal');
 window.openModal = function() { document.getElementById('inventarioForm').reset(); modal.classList.add('active'); }
 window.closeModal = function() { modal.classList.remove('active'); }

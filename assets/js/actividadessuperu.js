@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     guardarForzado(formData);
                 }
             } else if (data.success) {
-                mostrarAlerta('success', '✅ Éxito', 'Actividad guardada correctamente');
+                mostrarAlerta('success', 'Éxito', 'Actividad guardada correctamente');
                 form.reset(); 
                 closeModal(); 
                 window.calendarObj.refetchEvents();
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if(data.success) { 
-                mostrarAlerta('success', '✅ Guardado', 'Actividad creada correctamente');
+                mostrarAlerta('success', 'Guardado', 'Actividad creada correctamente');
                 form.reset(); 
                 closeModal(); 
                 window.calendarObj.refetchEvents(); 
@@ -155,7 +155,7 @@ function mostrarDetalle(event) {
             <div class="detail-row" style="background: rgba(107, 114, 128, 0.2); border-left: 3px solid #6b7280; padding: 15px; margin-bottom: 10px;">
                 <i class="fas fa-check-circle detail-icon" style="color: #9ca3af;"></i>
                 <span class="detail-value" style="color: #9ca3af; font-size: 1.1rem; font-weight: 700;">
-                    ✅ ACTIVIDAD FINALIZADA
+                    Actividad Finalizada
                 </span>
             </div>`;
         }
